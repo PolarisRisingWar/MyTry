@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".rateActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.1"
+        android:gravity="center"
+        android:text="这是个将人民币转换成欧元、美元、韩元的程序\n（显示值会保留两位小数）" />
+
+    <EditText
+        android:id="@+id/ipRMB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint="请在此处输入人民币值"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/opEuro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="点我转换为欧元" />
+
+    <Button
+        android:id="@+id/opDollar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="点我转换为美元" />
+
+    <Button
+        android:id="@+id/opWon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="点我转换为韩元" />
+
+    <TextView
+        android:id="@+id/opNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="将会在此处显示转换后的值" />
+
+    <Button
+        android:id="@+id/changeRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:text="点我修改汇率\n（清除自定义汇率后点我，恢复默认汇率）" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1人民币="
+            android:gravity="end"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:hint="此处填写自定义汇率"
+            android:id="@+id/currentRate"
+            android:inputType="numberDecimal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="你要兑换的货币"
+            android:id="@+id/currentType"/>
+
+    </LinearLayout>
+
+</LinearLayout>
