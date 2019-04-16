@@ -1,6 +1,7 @@
 package com.example.mytry;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,7 @@ public class changeRate extends AppCompatActivity implements View.OnClickListene
 
     Button back,backWith;
     EditText euroRate,dollarRate,wonRate;
-    double newEuroRate,newDollarRate,newWonRate;
+    float newEuroRate,newDollarRate,newWonRate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +40,20 @@ public class changeRate extends AppCompatActivity implements View.OnClickListene
         }
         else if(view.getId()==R.id.backWithNumber){
             try{
-                newEuroRate = Double.parseDouble(euroRate.getText().toString());
-                newDollarRate = Double.parseDouble(dollarRate.getText().toString());
-                newWonRate = Double.parseDouble(wonRate.getText().toString());
+                newEuroRate = Float.parseFloat(euroRate.getText().toString());
+                newDollarRate = Float.parseFloat(dollarRate.getText().toString());
+                newWonRate = Float.parseFloat(wonRate.getText().toString());
                 intent.putExtra("newEuroRate",newEuroRate);
                 intent.putExtra("newDollarRate",newDollarRate);
                 intent.putExtra("newWonRate",newWonRate);
                 startActivity(intent);
+
+                SharedPreferences rateData= getSharedPreferences("rateData", 0);
+                SharedPreferences.Editor editor = rateData.edit();
+                editor.putFloat("newEuroRate",newEuroRate);
+                editor.putFloat("newDollarRate",newDollarRate);
+                editor.putFloat("newWonRate",newWonRate);
+                editor.apply();
             }
             catch (Exception e){
                 Toast.makeText(changeRate.this,"您必须要输入所有汇率！",Toast.LENGTH_SHORT).show();

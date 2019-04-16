@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/backToMain"
-        android:text="点我直接返回主页面并恢复默认汇率"/>
+        android:text="点我直接返回主页面并暂时不修改汇率"/>
 
     <LinearLayout
         android:layout_width="match_parent"
