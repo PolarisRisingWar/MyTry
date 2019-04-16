@@ -22,10 +22,8 @@ public class C2FActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_c2f);
 
         out=findViewById(R.id.show);
-        //out.setText("登录界面是我");
 
         cValue=findViewById(R.id.ipt);
-        //String c=ipname.getText().toString();
 
         Button btn=findViewById(R.id.button);
         btn.setOnClickListener(this);

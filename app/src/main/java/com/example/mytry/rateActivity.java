@@ -1,8 +1,11 @@
 package com.example.mytry;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,9 +20,9 @@ import java.text.DecimalFormat;
 public class rateActivity extends AppCompatActivity implements View.OnClickListener {
 
     double RMB,result;
-    double currentRate=0;
-    TextView opNum,currentType;
-    EditText ipRmb,currentRateR;
+    double currentRate=0,newEuroRate=0,newDollarRate=0,newWonRate=0;
+    TextView opNum;
+    EditText ipRmb;
     Button opEuro,opDollar,opWon,changeRate;
 
     @Override
@@ -41,57 +44,49 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
         changeRate=findViewById(R.id.changeRate);
         changeRate.setOnClickListener(this);
 
-        currentRateR=findViewById(R.id.currentRate);
+        Intent intent = getIntent();
+        newEuroRate = intent.getDoubleExtra("newEuroRate",0);
+        newDollarRate = intent.getDoubleExtra("newDollarRate",0);
+        newWonRate = intent.getDoubleExtra("newWonRate",0);
     }
 
     @Override
     public void onClick(View v) {
-
-        //如果是点了更改汇率按钮
-
-            //如果是点了直接兑换按钮
             try {
                 if(v.getId()==R.id.changeRate){
-                    currentRate=Double.parseDouble(currentRateR.getText().toString());
-                    currentRate=1/currentRate;
+                    Intent intent = new Intent(this, com.example.mytry.changeRate.class);
+                    startActivity(intent);//此处用这个代码，点击changeRate按钮跳转到changeRate.java界面
                 }
                 else {
                     RMB = Double.parseDouble(ipRmb.getText().toString());
-                    if(currentRate==0||currentRateR.getText().toString().equals("")) {
                         switch (v.getId()) {
                             case R.id.opEuro:
-                                currentRate=7.55;
-                                //currentType.setText("欧元");
+                                if(newEuroRate==0) {
+                                    currentRate = 7.55;
+                                }
+                                else{
+                                    currentRate=newEuroRate;
+                                }
                                 break;
                             case R.id.opDollar:
-                                currentRate=6.71;
-                                //currentType.setText("美元");
+                                if(newDollarRate==0){
+                                    currentRate=6.71;
+                                }
+                                else{
+                                    currentRate=newDollarRate;
+                                }
                                 break;
                             case R.id.opWon:
-                                currentRate=0.0059;
-                                //currentType.setText("韩元");
+                                if(newWonRate==0){
+                                    currentRate=0.0059;
+                                }
+                                else{
+                                    currentRate=newWonRate;
+                                }
                                 break;
                             default:
                                 break;
                         }
-                    }
-
-
-                    //改“你要兑换的货币”这一项
-                    /*switch (v.getId()) {
-                        case R.id.opEuro:currentType.setText("欧元");
-                            break;
-                        case R.id.opDollar:currentType.setText("美元");
-                            break;
-                        case R.id.opWon:currentType.setText("韩元");
-                            break;
-                        default:
-                            break;
-                    }*/
-
-
-
-
                         result=RMB/currentRate;
                         DecimalFormat df = new DecimalFormat("#.00");
                         opNum.setText(df.format(result));
@@ -102,6 +97,26 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
+    }
 
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_toC2F) {
+            Intent intent = new Intent(this, com.example.mytry.C2FActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id==R.id.menu_toNewTeam){
+            Intent intent = new Intent(this, com.example.mytry.newTeamActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
