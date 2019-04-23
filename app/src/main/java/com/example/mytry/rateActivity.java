@@ -30,6 +30,8 @@ import java.text.DecimalFormat;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import java.net.HttpURLConnection;
+
 public class rateActivity extends AppCompatActivity implements View.OnClickListener,Runnable {
 
     float RMB, result;
@@ -167,8 +169,8 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
 
         //获取网络数据
         try {
-            URL url = new URL("https://user.qzone.qq.com/1499695895/infocenter");
-            HttpsURLConnection https=(HttpsURLConnection)url.openConnection();
+            URL url = new URL("http://www.boc.cn/sourcedb/whpj/");
+            HttpURLConnection https=(HttpURLConnection)url.openConnection();
             //https.connect();
             //https.setRequestMethod("GET");
             InputStream in=https.getInputStream();
