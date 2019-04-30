@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class rateActivity extends AppCompatActivity implements View.OnClickListener,Runnable {
 
@@ -36,6 +39,8 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
     Button opEuro, opDollar, opWon, changeRate;
     String TAG = "rateActivity";
     Handler handler;
+    
+    private String updateDate="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +71,25 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
         newDollarRate = rateData.getFloat("newDollarRate", 0);
         newWonRate = rateData.getFloat("newWonRate", 0);
         Log.i(TAG, "三大汇率" + newEuroRate + "," + newDollarRate + "," + newWonRate);
+        
+        updateDate=rateData.getString("update_date","");
+        //获取当前系统时间
+        //new Date不建议用
+        Date today=Calendar.getInstance().getTime();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy_MM-dd");//yyyyMMdd也行，重要的是8位
+        final String todayStr=sdf.format(today);
+        Log.i(TAG, "onCreate: rateData="+updateDate);
+        Log.i(TAG, "onCreate: rateData="+todayStr);
+        //判断时间。系统时间与储存的时间是否一致（我们的目标是一天一更新）
+        if(!todayStr.equals((updateDate))){
+            Log.i(TAG, "onCreate: 需要更新");
+            //开启子线程
+            Thread subThread = new Thread(this);
+            subThread.start();
+        }
+        else Log.i(TAG, "onCreate: 不需要更新");
 
-        Thread subThread = new Thread(this);
-        subThread.start();
+        
 
         handler = new Handler() {
             public void handleMessage(Message msg) {
@@ -79,6 +100,17 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
                     newWonRate=bdl.getFloat("newWonRate");
 
                     Log.i(TAG, "美元汇率: "+newDollarRate+"  欧元汇率："+newEuroRate+"  韩元汇率："+newWonRate);
+
+                    //保存更新的日期
+                    SharedPreferences  rateData = getSharedPreferences("rateData", 0);
+                    SharedPreferences.Editor editor=rateData.edit();
+                    editor.putFloat("newDollarRate",newDollarRate);
+                    editor.putFloat("newWonRate",newWonRate);
+                    editor.putFloat("newEuroRate",newEuroRate);
+                    editor.putString("update_date",todayStr);
+                    editor.apply();//commit也可以
+
+                    Toast.makeText(rateActivity.this,"汇率已更新",Toast.LENGTH_SHORT).show();
                 }
                 super.handleMessage(msg);
             }
@@ -145,7 +177,13 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, com.example.mytry.newTeamActivity.class);
             startActivity(intent);
             return true;
-        } else {
+        } else if(id==R.id.open_list){
+            //打开列表窗口
+            Intent list=new Intent(this,MyListActivity.class);
+            startActivity(list);
+            return true;
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }
