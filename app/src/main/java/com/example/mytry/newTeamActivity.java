@@ -36,6 +36,23 @@ public class newTeamActivity extends AppCompatActivity implements View.OnClickLi
         Button reset=findViewById(R.id.reset);
         reset.setOnClickListener(this);
     }
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        //处理旋转时数据丢失的问题
+        //用bundle来保留
+        String scorea=((TextView)findViewById(R.id.scoreA)).getText().toString();
+        String scoreb=((TextView)findViewById(R.id.scoreB)).getText().toString();
+        outState.putString("teamA_score",scorea);
+        outState.putString("teamB_score",scoreb);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        String scorea=savedInstanceState.getString("teamA_score");
+        String scoreb=savedInstanceState.getString("teamB_score");
+        ((TextView)findViewById(R.id.scoreA)).setText(scorea);
+        ((TextView)findViewById(R.id.scoreB)).setText(scoreb);
+    }
 
     @Override
     public void onClick(View v) {

@@ -11,13 +11,15 @@
         android:theme="@style/AppTheme">
         <activity android:name=".changeRate"></activity>
         <activity android:name=".rateActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".newTeamActivity"></activity>
+        <activity android:name=".newTeamActivity" >
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity android:name=".C2FActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />

@@ -2,10 +2,10 @@ package com.example.mytry;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -16,21 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import java.net.HttpURLConnection;
 
 public class rateActivity extends AppCompatActivity implements View.OnClickListener,Runnable {
 
@@ -78,8 +73,12 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
         handler = new Handler() {
             public void handleMessage(Message msg) {
                 if (msg.what == 5) {
-                    String string = (String) msg.obj;
-                    Log.i(TAG, "handleMessage: " + string);
+                    Bundle bdl= (Bundle) msg.obj;
+                    newEuroRate=bdl.getFloat("newEuroRate");
+                    newDollarRate=bdl.getFloat("newDollarRate");
+                    newWonRate=bdl.getFloat("newWonRate");
+
+                    Log.i(TAG, "美元汇率: "+newDollarRate+"  欧元汇率："+newEuroRate+"  韩元汇率："+newWonRate);
                 }
                 super.handleMessage(msg);
             }
@@ -153,7 +152,10 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void run() {
-        Log.i(TAG, "run: Run方法在运行");
+        //此处将实时汇率放进bundle里
+        Bundle bundle=new Bundle();
+
+        /*Log.i(TAG, "run: Run方法在运行");
         for (int i = 1; i < 6; i++) {
             Log.i(TAG, "run: " + i);
             try {
@@ -162,32 +164,93 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
-        Message msg = handler.obtainMessage();
-        msg.what = 5;
-        msg.obj = "Hello! I'm a message from run()!";
-        handler.sendMessage(msg);
+        这一部分是输出1,2,3,4,5等，以及休眠2毫秒之类的东西*/
+
+
 
         //获取网络数据
-        try {
-            URL url = new URL("http://www.boc.cn/sourcedb/whpj/");
+        /*try {
+            //URL url = new URL("http://www.boc.cn/sourcedb/whpj/");
+            //URL url=new URL("http://usd-cny.com/icbc.htm");
+            URL url=new URL("http://www.usd-cny.com/bankofchina.htm");
             HttpURLConnection https=(HttpURLConnection)url.openConnection();
             //https.connect();
             //https.setRequestMethod("GET");
             InputStream in=https.getInputStream();
             String html=inputStream2String(in);
             Log.i(TAG, "run: html="+html);
+            Document doc=Jsoup.parse(html);
         } catch (MalformedURLException e) {
             Log.e(TAG,Log.getStackTraceString(e));
         } catch (IOException e) {
             Log.e(TAG,Log.getStackTraceString(e));
+        }*/
+
+        //使用Jsoup包解析网站代码
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("http://www.usd-cny.com/bankofchina.htm").get();
+            //doc=Jsoup.parse(html);
+            //这一句可以提取html
+
+            //获取title
+            Log.i(TAG,"title:"+doc.title());
+
+            //获取table中的多个表格（本次运行过程中只有一个table）
+            Elements tables=doc.getElementsByTag("table");
+            int i=1;
+            for(Element table:tables){
+                //显示全部表格：Log.i(TAG, "table["+i+"]="+table);
+                i++;
+            }
+            Element table1=tables.get(0);
+            //显示我们需要的这个table：Log.i(TAG, "table1="+table1);
+
+            //获取td中的内容
+            Elements tds=table1.getElementsByTag("td");
+            //过滤出我们所需要的数据
+            for(int s=0;s<tds.size();s+=6){
+                Element td1=tds.get(s);//得到币种
+                Element td2=tds.get(s+5);//得到该币种的折算价
+                Log.i(TAG, "text="+td1.text()+"  折算价："+td2.text());
+                String str1=td1.text();
+                String val=td2.text();
+
+                if("美元".equals(str1)){
+                    bundle.putFloat("newDollarRate",Float.parseFloat(val)/100f);
+                }
+                else if("韩元".equals(str1)){
+                    bundle.putFloat("newWonRate",Float.parseFloat(val)/100f);
+                }
+                else if("欧元".equals(str1)){
+                    bundle.putFloat("newEuroRate",Float.parseFloat(val)/100f);
+                }
+            }
+            /*for(Element td:tds){
+                //展示所有td的内容：Log.i(TAG, "td: "+td);
+                //在这种情况下，td.text()和td.html()获得的结果是一样的，但有时在td里面的内容里面也有HTML标签的时候就会不一样。
+                //另一种思路是先取出tr，然后再从中拆分td
+
+            }*/
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        //bundle中保存了所获取的汇率
+        //获取msg对象，用于返回主线程
+        Message msg = handler.obtainMessage();
+        msg.what = 5;
+        //msg.obj = "Hello! I'm a message from run()!";
+        msg.obj=bundle;
+        handler.sendMessage(msg);
+
     }
 
     private String inputStream2String(InputStream inputStream) throws IOException {
         final int bufferSize=1024;
         final char[] buffer=new char[bufferSize];
         final StringBuilder out=new StringBuilder();
-        Reader in=new InputStreamReader(inputStream,"UTF-8");
+        Reader in=new InputStreamReader(inputStream,"gb2312");
         for(;;){
             int rsz=in.read(buffer,0,buffer.length);
             if(rsz<0)
