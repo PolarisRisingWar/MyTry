@@ -71,7 +71,7 @@ public class RateListActivity extends ListActivity implements Runnable{
         List<String> retList=new ArrayList<String>();
         Document doc = null;
         try {
-            Thread.sleep(3000);
+            Thread.sleep(3);
             doc = Jsoup.connect("http://www.usd-cny.com/bankofchina.htm").get();
             Log.i(TAG,"title:"+doc.title());
             Elements tables=doc.getElementsByTag("table");
