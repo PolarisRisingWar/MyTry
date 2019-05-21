@@ -66,6 +66,7 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
         newDollarRate = intent.getFloatExtra("newDollarRate", 0);
         newWonRate = intent.getFloatExtra("newWonRate", 0);
 
+        //获取rateData里保存的数据
         SharedPreferences rateData = getSharedPreferences("rateData", 0);
         newEuroRate = rateData.getFloat("newEuroRate", 0);
         newDollarRate = rateData.getFloat("newDollarRate", 0);
@@ -177,10 +178,23 @@ public class rateActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, com.example.mytry.newTeamActivity.class);
             startActivity(intent);
             return true;
-        } else if(id==R.id.open_list){
+        } else if(id==R.id.open_list){//这个是那个瓶子图表
             //打开列表窗口
-            Intent list=new Intent(this,MyRealList2Activity.class);
+            Intent list=new Intent(this,RateListActivity.class);
             startActivity(list);
+
+            //测试数据库
+           /* RateItem item1=new RateItem("aaaa","123");
+            RateManager manager=new RateManager(this);
+            manager.add(item1);
+            manager.add(new RateItem("bbbb","23.5"));
+            Log.i(TAG, "onOptionsItemSelected: 写入数据完毕");
+
+            //查询所有数据
+            List<RateItem> testList=manager.listAll();
+            for (RateItem i:testList){
+                Log.i(TAG, "onOptionsItemSelected: 取出数据Name="+i.getCurName()+" Rate="+i.getCurRate()+" id="+i.getId());
+            }*/
             return true;
         }
         else {
