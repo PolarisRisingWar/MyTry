@@ -11,11 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FrameActivity"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".ViewPageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".FrameActivity">
+        </activity>
         <activity
             android:name=".RateCalcActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.Dialog" />
@@ -28,14 +32,10 @@
             android:name=".MyList2Activity"
             android:label="@string/title_activity_my_list2"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyListActivity">
-
-        </activity>
+        <activity android:name=".MyListActivity"></activity>
         <activity android:name=".RateListActivity" />
         <activity android:name=".changeRate" />
-        <activity android:name=".rateActivity">
-
-        </activity>
+        <activity android:name=".rateActivity"></activity>
         <activity android:name=".newTeamActivity" />
         <activity android:name=".C2FActivity" />
         <activity android:name=".LoginActivity" />
